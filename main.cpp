@@ -42,6 +42,7 @@ scan_buffer;
 		}
 	} 
 	
-	line_count>>cout;
+//	line_count>>cout;
+	printf("%i", line_count);
 
 }
