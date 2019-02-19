@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sys/stat.h>
+
 
 using namespace std;
 
@@ -9,6 +11,18 @@ char scan_buffer;
 int line_length[144];
 
 string input_buffer;
+
+int mkdir(std::string)
+{
+
+	const int dir_err = mkdir("foo", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	if (-1 == dir_err)
+	{
+	    printf("Error creating directory!n");
+	    exit(1);
+	}
+
+}
 
 int main()
 {
@@ -21,41 +35,39 @@ int main()
 
 	while(exit_switch)
 	{
-	std::string name;
-	std::cout << "What is your name? ";
-	getline (std::cin, name);
-	std::cout << "Hello, " << name << "!\n";
-	if(name == "exit"){return 0;}
+		//interactive shell sdtio
+		std::string line;
+		std::cout << "dave-sql> ";
+		getline (std::cin, line);
+//		std::cout << "Hello, " << line << "!\n";
+		if(line == "exit"){return 0;}
 
-	/*
-			int input_size = input_buffer.size();
+		int input_size = line.size();
 
 		for(int i = 0; i < input_size; i++)
 		{
-		scan_buffer = input_buffer[i];
-		switch(scan_buffer)
-			{
-			case ';':
-				line_count++;
-				word_count[line_count] = 0;
-			break;
-			
-			case ' ':
-				//line_length[line_count]++;
-				word_count[line_count]++;
-			break;
-			
-			default:
-				page_buffer[line_count][word_count[line_count]] = 
-	scan_buffer;
+			scan_buffer = line[i];
+			switch(scan_buffer)
+				{
+				case ';':
+					line_count++;
+					word_count[line_count] = 0;
+				break;
+				
+				case ' ':
+					//line_length[line_count]++;
+					word_count[line_count]++;
+				break;
+				
+				default:
+					page_buffer[line_count][word_count[line_count]] = 
+scan_buffer;
 
-			}
-		} 
+				}
 
-	*/	
-	//	line_count>>cout;
+		}
 		printf("line count:%i \n", line_count);
 		printf("word_count:%i \n", word_count[0]);
+
 	}
-//	return 0;
 }
