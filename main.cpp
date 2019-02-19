@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sys/stat.h>
 
-
 using namespace std;
 
 char sql_line[144];
@@ -10,11 +9,14 @@ char page_buffer[144][144];
 char scan_buffer;
 int line_length[144];
 
-string input_buffer;
+/*
+mkdir- function to create a directory, which is equivalent in our relational database to
+a new database. 
+Takes a string which is the directory name. Will create directory in "./" or return error 
+*/
 
 int mkdir(std::string dir_name)
 {
-
 	std::string dir_path_complete_temp = "./" + dir_name;
 	char* dir_path_complete = &dir_path_complete_temp[0u];
 
@@ -25,6 +27,30 @@ int mkdir(std::string dir_name)
 	    exit(1);
 	}
 }
+
+/*
+rmdir
+
+*/
+
+int rmdir(std::string dir_name)
+{
+{
+	std::string dir_path_complete_temp = "./" + dir_name;
+	char* dir_path_complete = &dir_path_complete_temp[0u];
+
+	const int dir_err = rmdir(dir_path_complete, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	if (-1 == dir_err)
+	{
+	    printf("Error removing directory!n");
+	    exit(1);
+	}
+}
+
+
+/*
+mktable- fuction to create a table within a database. The table is stored as a text file.
+*/
 
 int mktable()
 {
