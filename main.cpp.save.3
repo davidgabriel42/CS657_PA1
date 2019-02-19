@@ -12,26 +12,17 @@ int line_length[144];
 
 string input_buffer;
 
-int mkdir(std::string dir_name)
+int mkdir(std::string)
 {
 
-	std::string dir_path_complete_temp = "./" + dir_name;
-	char* dir_path_complete = &dir_path_complete_temp[0u];
-
-	const int dir_err = mkdir(dir_path_complete, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	const int dir_err = mkdir("foo", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	if (-1 == dir_err)
 	{
 	    printf("Error creating directory!n");
 	    exit(1);
 	}
-}
 
-int mktable()
-{
-	
-	
 }
-
 
 int main()
 {
