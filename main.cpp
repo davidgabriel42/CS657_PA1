@@ -35,11 +35,10 @@ rmdir
 
 int rmdir(std::string dir_name)
 {
-{
 	std::string dir_path_complete_temp = "./" + dir_name;
 	char* dir_path_complete = &dir_path_complete_temp[0u];
 
-	const int dir_err = rmdir(dir_path_complete, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	const int dir_err = rmdir(dir_path_complete);
 	if (-1 == dir_err)
 	{
 	    printf("Error removing directory!n");
