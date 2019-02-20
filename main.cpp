@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <sys/stat.h>
 
@@ -25,29 +26,17 @@ int mkdir(std::string dir_name)
 }
 
 /*
-rmdir
+rename- depreciates unused databases
 
 */
 
 int rmdir(std::string dir_name)
 {
-	std::string dir_path_complete_temp = "./" + dir_name;
-	printf("1\n");
-	char* dir_path_complete = &dir_path_complete_temp[0u];
 
-	printf("2\n");
-	const int dir_err = rmdir("./dir1");
+	std::string rm_cmd = "rm -r -f ./" + dir_name;
+	system("rm -r -f ./dir1");
 
-	printf("rmdir retval: %i", dir_err);
 
-	printf("3\n");
-
-	if (-1 == dir_err)
-	{
-	    printf("Error removing directory!n");
-	    exit(1);
-	}
-	printf("4\n");
 }
 
 
