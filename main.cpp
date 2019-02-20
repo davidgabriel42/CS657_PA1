@@ -2,10 +2,6 @@
 #include <sys/stat.h>
 
 using namespace std;
-
-char sql_line[144];
-char page_buffer[144][144];
-
 char scan_buffer;
 int line_length[144];
 
@@ -36,14 +32,22 @@ rmdir
 int rmdir(std::string dir_name)
 {
 	std::string dir_path_complete_temp = "./" + dir_name;
+	printf("1\n");
 	char* dir_path_complete = &dir_path_complete_temp[0u];
 
-	const int dir_err = rmdir(dir_path_complete);
+	printf("2\n");
+	const int dir_err = rmdir("./dir1");
+
+	printf("rmdir retval: %i", dir_err);
+
+	printf("3\n");
+
 	if (-1 == dir_err)
 	{
 	    printf("Error removing directory!n");
 	    exit(1);
 	}
+	printf("4\n");
 }
 
 
@@ -76,6 +80,7 @@ int main()
 //		std::cout << "Hello, " << line << "!\n";
 		if(line == "exit"){return 0;}
 		if(line == "mkdir"){mkdir("dir1");}
+		if(line == "rmdir"){rmdir("dir1");}
 
 		int input_size = line.size();
 
@@ -95,10 +100,9 @@ int main()
 				break;
 				
 				default:
-					page_buffer[line_count][word_count[line_count]] = 
-scan_buffer;
-
+				break;
 				}
+		line.clear();
 
 		}
 		printf("line count:%i \n", line_count);
