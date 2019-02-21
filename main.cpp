@@ -37,6 +37,10 @@ int mkdir(std::string dir_name)
         else if (ENOENT == errno)
         {
                 dir_err = mkdir(dir_path_complete, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+        	printf("-- Database ");
+                std::cout << dir_name;
+                printf(" created.\r\n");
                 /* Directory does not exist. */
         }
         else
@@ -52,8 +56,38 @@ rename- depreciates unused databases
 
 int rmdir(std::string dir_name)
 {
-	std::string rm_cmd = "rm -r -f ./" + dir_name;
-	system(&rm_cmd[0U]);
+        //format strings
+        std::string dir_path_complete_temp = "./" + dir_name;
+       	char* dir_path_complete = &dir_path_complete_temp[0u];
+        int dir_err;
+
+
+        DIR* dir = opendir(dir_path_complete);
+        if (dir)
+        {
+            /* Directory exists. */
+                closedir(dir);
+                //remove direcory
+               	std::string rm_cmd = "rm -r -f ./" + dir_name;
+                //cout<< rm_cmd;
+        	system(&rm_cmd[0U]);
+                //console output
+                printf("-- Database ");
+                std::cout << dir_name;
+                printf(" deleted.\r\n");
+
+        }
+        else if (ENOENT == errno)
+        {
+        	printf("--!Failed to delete ");
+                std::cout << dir_name;
+                printf(" because it does not exist.\r\n");
+                /* Directory does not exist. */
+        }
+        else
+        {
+            /* opendir() failed for some other reason. */
+        }
 }
 
 /*
@@ -70,9 +104,6 @@ int mktable()
 int main()
 {
 	bool exit_switch = 1;
-	int line_count = 0;
-	int word_count[144];
-	word_count[0] = 0;
 
 	while(exit_switch)
 	{
@@ -82,27 +113,23 @@ int main()
 		getline (std::cin, line);
 
 		std::string result;
-/*
-		std::regex create_database ("CREATE DATABASE");
-  		std::smatch match;
-		if (std::regex_search(line, match, create_database) && match.size() > 1) 
-		{
-			result = match.str(1);
-			mkdir("dir1");
-			printf("make database"); 
-		}
-*/
+                //regex detect command
 		if(std::regex_match (line, std::regex("(CREATE DATABASE)(.*)" )))
 		{
-			//std::cout << "string literal matched\n";
 			std::string database_name = line.erase(0, 16);
 			std::string::size_type semicolon = line.find(";");
                         database_name = database_name.erase(semicolon, 1);
 			mkdir(database_name);
-			
-                        //std::cout << database_name + "\n";
-                       
 		}
+
+		if(std::regex_match (line, std::regex("(DROP DATABASE)(.*)" )))
+		{
+			std::string database_name = line.erase(0, 14);
+			std::string::size_type semicolon = line.find(";");
+                        database_name = database_name.erase(semicolon, 1);
+			rmdir(database_name);
+		}
+
 /*
 		std::string::size_type i = t.find(s);
 
