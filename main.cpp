@@ -253,10 +253,14 @@ int main()
 			std::string table_name = line.erase(0, 12);
 			std::string::size_type add = line.find("ADD");
 			std::string::size_type semicolon = line.find(";");
-			std::string schema = line.substr(add,(semicolon-add));
-                        table_name = table_name.erase(add, 3);
-			semicolon = line.find(";");
-                        table_name = table_name.erase(semicolon, 1);
+			//extract schema
+			std::string schema = line.substr(add+4,(semicolon-add));
+			semicolon = schema.find(";");
+			schema = schema.erase(semicolon,1);
+			//extract table name
+                        add = table_name.find("ADD");
+			semicolon = table_name.find(";");
+                        table_name = table_name.erase(add, semicolon-add+2);
 			add_table(table_name, schema);
 			
 
