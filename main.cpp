@@ -100,7 +100,7 @@ int use(std::string use_name)
 use_path_complete_str = "./" + use_name;
 use_path_complete = &use_path_complete_str[0u];
 
-cout<< use_path_complete_str;
+cout<< "-- Using database "<< use_path_complete_str << "." << std::endl;
 
 return 1;
 }
@@ -111,48 +111,53 @@ mktable- fuction to create a table within a database. The table is stored as a t
 
 int mktable(std::string table_name)
 {
+	//string format
+	std::string table_path = use_path_complete_str + "/" + table_name;
 
-std::string table_path = use_path_complete_str + "/" + table_name; 
+	if (std::ifstream(table_path))
+	{
+		std::cout << "-- !Failed to create table "<< table_name << " because it already exists."  << std::endl;
+		return false;
+	}
+	std::ofstream file(table_path);
+	if (!file)
+	{
+	std::ofstream myfile;
 
-if (std::ifstream(table_path))
-{
-	std::cout << "-- !Failed to create table "<< table_name << " because it already exists."  << std::endl;
-	return false;
-}
-std::ofstream file(table_path);
-if (!file)
-{
-     std::cout << "File could not be created" << std::endl;
-     return false;
-}
-
-std::ofstream myfile;
-
-myfile.open (table_path);
-myfile << "This is the first cell in the first column.\n";
-myfile << "a,b,c,\n";
-myfile << "c,s,v,\n";
-myfile << "1,2,3.456\n";
-myfile << "semi;colon";
-myfile.close();
-
-
-return 1;
+	myfile.open (table_path);
+	myfile << "This is the first cell in the first column.\n";
+	myfile << "a,b,c,\n";
+	myfile << "c,s,v,\n";
+	myfile << "1,2,3.456\n";
+	myfile << "semi;colon";
+	myfile.close();
+	std::cout << "-- Table " << table_name << " created."  << std::endl;
+	}
+	return 1;
 }
 
 
 int rmtable(std::string table_name)
 {
-/*
-std::string table_path = use_path_complete_str + "/" + table_name;
+	//string format
+	std::string table_path = use_path_complete_str + "/" + table_name;
 
-if( remove( table_path ) != 0 )
-perror( "Error deleting file" );
-else
-puts( "File successfully deleted" );
-*/
+	if (std::ifstream(table_path))
+	{
+		std::string rm_cmd = "rm -r -f ./" + table_path;
+		std::cout << "-- Table "<< table_name << " deleted."  << std::endl;
+        	system(&rm_cmd[0U]);
 
-return 1;
+		return 1;
+	}
+	std::ofstream file(table_path);
+	if (!file)
+	{
+	std::cout << "-- !Failed to delete " << table_name << " because it does not exist."  << std::endl;
+	return 0;
+	}
+
+return 0;
 }
 
 int main()
