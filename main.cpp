@@ -134,7 +134,7 @@ int use(std::string use_name)
 mktable- fuction to create a table within a database. The table is stored as a text file.
 */
 
-int mktable(std::string table_name)
+int mktable(std::string table_name, std::string schema)
 {
 	//string format
 	std::string table_path = use_path_complete_str + "/" + table_name;
@@ -150,6 +150,7 @@ int mktable(std::string table_name)
 	std::cout << "-- Table " << table_name << " created."  << std::endl;
 	std::ofstream myfile;
 	myfile.open (table_path);
+	
 	myfile.close();
 	}
 	return 1;
@@ -181,9 +182,14 @@ return 0;
 int add_table(std::string table_name, std::string schema)
 {
 
+	//string format
+	std::string table_path = use_path_complete_str + "/" + table_name;
 
-	std::cout << table_name << std::endl;
-	std::cout << schema  << std::endl;
+	//write schema to file
+	std::ofstream myfile;
+	myfile.open (table_path);
+	myfile << schema;
+      	myfile.close();	
 
 return 1;
 /*
@@ -234,10 +240,22 @@ int main()
 		}
 		if(std::regex_match (line, std::regex("(CREATE TABLE)(.*)" )))
 		{
-			std::string table_name = line.erase(0, 13);
+			line = line.erase(0, 13);
 			std::string::size_type semicolon = line.find(";");
-                        table_name = table_name.erase(semicolon, 1);
-			mktable(table_name);
+                        std::string::size_type open_parens = line.find("(");
+			//extract schema
+			std::string schema = line.substr(open_parens+1, semicolon);
+			semicolon = schema.find(";");
+			schema = schema.erase((semicolon-1),2 );
+			//extract table name
+			std::string table_name = line.substr(0, open_parens-1);
+
+
+			std::cout << table_name << std::endl;
+			std::cout << schema  << std::endl;
+
+
+			mktable(table_name, schema);
 		}
 
 		if(std::regex_match (line, std::regex("(DROP TABLE)(.*)" )))
@@ -260,10 +278,8 @@ int main()
 			//extract table name
                         add = table_name.find("ADD");
 			semicolon = table_name.find(";");
-                        table_name = table_name.erase(add, semicolon-add+2);
+                        table_name = table_name.erase(add+1, semicolon-add+2);
 			add_table(table_name, schema);
-			
-
 		}
 
 		if(line == "exit"){return 0;}
