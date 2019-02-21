@@ -1,3 +1,28 @@
+/*
+CS 657 PA1
+
+Author: 
+David Gabriel
+2-21-19
+
+This program is an extremely minimalist database management system, 
+according to the programming assignment instructions. It lacks many 
+key features, and is not recommended for use as a database manager. 
+
+It is possible, with some intention, to input commands to this program
+in such a way that may harm your system. It is recommended to not 
+have super user permissions enabled while using this program. The program
+will issue "rm" commands with operands determined from user input. Use
+common sense. This program is safe when used with the provided testbench
+given with the assignment.
+
+There is absolutely NO warranty, not even for merchantability or suitability
+for a particular purchase.
+
+The author releases this software under GPL-3.0-only or GPL-3.0-or-later
+license. 
+
+*/
 #include <iostream>
 #include <fstream>
 #include <sys/stat.h>
@@ -14,7 +39,7 @@ std::string use_path_complete_str;
 
 /*
 mkdir- function to create a directory, which is equivalent in our relational database to
-a new database. 
+a new database.
 Takes a string which is the directory name. Will create directory in "./" or return error 
 */
 
@@ -92,17 +117,17 @@ return 1;
 }
 
 /*
-mktable- fuction to create a table within a database. The table is stored as a text file.
+use- fuction to select path to a database. 
 */
 
 int use(std::string use_name)
 {
-use_path_complete_str = "./" + use_name;
-use_path_complete = &use_path_complete_str[0u];
+	use_path_complete_str = "./" + use_name;
+	use_path_complete = &use_path_complete_str[0u];
 
-cout<< "-- Using database "<< use_path_complete_str << "." << std::endl;
+	cout<< "-- Using database "<< use_path_complete_str << "." << std::endl;
 
-return 1;
+	return 1;
 }
 
 /*
@@ -119,19 +144,13 @@ int mktable(std::string table_name)
 		std::cout << "-- !Failed to create table "<< table_name << " because it already exists."  << std::endl;
 		return false;
 	}
-	std::ofstream file(table_path);
-	if (!file)
+	else
 	{
-	std::ofstream myfile;
-
-	myfile.open (table_path);
-	myfile << "This is the first cell in the first column.\n";
-	myfile << "a,b,c,\n";
-	myfile << "c,s,v,\n";
-	myfile << "1,2,3.456\n";
-	myfile << "semi;colon";
-	myfile.close();
+	//create file
 	std::cout << "-- Table " << table_name << " created."  << std::endl;
+	std::ofstream myfile;
+	myfile.open (table_path);
+	myfile.close();
 	}
 	return 1;
 }
@@ -150,14 +169,31 @@ int rmtable(std::string table_name)
 
 		return 1;
 	}
-	std::ofstream file(table_path);
-	if (!file)
+	else
 	{
 	std::cout << "-- !Failed to delete " << table_name << " because it does not exist."  << std::endl;
 	return 0;
 	}
 
 return 0;
+}
+
+int add_table(std::string table_name, std::string schema)
+{
+
+
+	std::cout << table_name << std::endl;
+	std::cout << schema  << std::endl;
+
+return 1;
+/*
+	myfile << "This is the first cell in the first column.\n";
+	myfile << "a,b,c,\n";
+	myfile << "c,s,v,\n";
+	myfile << "1,2,3.456\n";
+	myfile << "semi;colon";
+*/
+
 }
 
 int main()
@@ -210,6 +246,20 @@ int main()
 			std::string::size_type semicolon = line.find(";");
                         table_name = table_name.erase(semicolon, 1);
 			rmtable(table_name);
+		}
+
+		if(std::regex_match (line, std::regex("(ALTER TABLE)(.*)" )))
+		{
+			std::string table_name = line.erase(0, 12);
+			std::string::size_type add = line.find("ADD");
+			std::string::size_type semicolon = line.find(";");
+			std::string schema = line.substr(add,(semicolon-add));
+                        table_name = table_name.erase(add, 3);
+			semicolon = line.find(";");
+                        table_name = table_name.erase(semicolon, 1);
+			add_table(table_name, schema);
+			
+
 		}
 
 		if(line == "exit"){return 0;}
