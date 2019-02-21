@@ -2,6 +2,9 @@
 #include <sys/stat.h>
 #include <regex>
 #include <string>
+#include <dirent.h>
+#include <errno.h>
+
 
 using namespace std;
 char scan_buffer;
@@ -16,21 +19,30 @@ Takes a string which is the directory name. Will create directory in "./" or ret
 int mkdir(std::string dir_name)
 {       
 
-        struct stat info;
+        std::string dir_path_complete_temp = "./" + dir_name;
+       	char* dir_path_complete = &dir_path_complete_temp[0u];
+        int dir_err;
 
-        if( stat( pathname, &info ) != 0 )
-                printf( "cannot access %s\n", pathname );
-        else if( info.st_mode & S_IFDIR )  // S_ISDIR() doesn't exist on my windows 
-                //printf( "%s is a directory\n", pathname );
-		printf("!Failed to create database");
-                printf(dir_name);
-                printf("because it already exists.\r\n")
-        else
-                printf( "%s is no directory\n", pathname );
-        	std::string dir_path_complete_temp = "./" + dir_name;
-        	char* dir_path_complete = &dir_path_complete_temp[0u];
-                int dir_err;
+
+        DIR* dir = opendir(dir_path_complete);
+        if (dir)
+        {
+            /* Directory exists. */
+                closedir(dir);
+//                printf("1");
+        	printf("-- !Failed to create database ");
+                std::cout << dir_name;
+                printf(" because it already exists.\r\n");
+        }
+        else if (ENOENT == errno)
+        {
                 dir_err = mkdir(dir_path_complete, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+                /* Directory does not exist. */
+        }
+        else
+        {
+            /* opendir() failed for some other reason. */
+        }
 
 }
 
@@ -88,7 +100,7 @@ int main()
                         database_name = database_name.erase(semicolon, 1);
 			mkdir(database_name);
 			
-                        std::cout << database_name + "\n";
+                        //std::cout << database_name + "\n";
                        
 		}
 /*
