@@ -150,7 +150,7 @@ int mktable(std::string table_name, std::string schema)
 	std::cout << "-- Table " << table_name << " created."  << std::endl;
 	std::ofstream myfile;
 	myfile.open (table_path);
-	
+	myfile << schema;
 	myfile.close();
 	}
 	return 1;
@@ -197,7 +197,6 @@ return 1;
 	myfile << "a,b,c,\n";
 	myfile << "c,s,v,\n";
 	myfile << "1,2,3.456\n";
-	myfile << "semi;colon";
 */
 
 }
@@ -249,7 +248,6 @@ int main()
 			schema = schema.erase((semicolon-1),2 );
 			//extract table name
 			std::string table_name = line.substr(0, open_parens-1);
-
 
 			std::cout << table_name << std::endl;
 			std::cout << schema  << std::endl;
