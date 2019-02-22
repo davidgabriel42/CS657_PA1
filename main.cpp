@@ -201,6 +201,44 @@ return 1;
 
 }
 
+
+int read_table(std::string table_name)
+{
+	//string format
+	std::string table_path = use_path_complete_str + "/" + table_name;
+
+	if (std::ifstream(table_path))
+	{
+	//if table exists
+
+		std::ifstream myfile;
+		myfile.open (table_path);
+		std::string line;
+
+//		std::cout << "-- Table "<< table_name << " deleted."  << std::endl;
+
+		while (std::getline(myfile, line))
+		{
+			std::cout << line << std::endl;
+		}
+	      	myfile.close();
+
+//		std::cout << "-- Table "<< table_name << " deleted."  << std::endl;
+
+		return 1;
+	}
+	else
+	{
+
+	std::cout << "-- !Failed to query " << table_name << " because it does not exist."  << std::endl;
+	return 0;
+
+	}
+
+return 0;
+}
+
+
 int main()
 {
 	bool exit_switch = 1;
@@ -279,6 +317,17 @@ int main()
                         table_name = table_name.erase(add+1, semicolon-add+2);
 			add_table(table_name, schema);
 		}
+		if(std::regex_match (line, std::regex("(SELECT)(.*)" )))
+		{
+			//std::cout << "selectfrom" << std::endl;
+			line = line.erase(0, 14);
+			std::string::size_type semicolon = line.find(";");
+			std::string table_name = line.erase(semicolon,1);
+			//extract table name;
+			//std:cout << table_name << std::endl;
+			read_table(table_name);
+		}
+
 
 		if(line == "exit"){return 0;}
 		if(line == "rmdir"){rmdir("dir1");}
