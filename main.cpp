@@ -211,6 +211,7 @@ int read_table(std::string table_name)
 	{
 	//if table exists
 
+
 		std::ifstream myfile;
 		myfile.open (table_path);
 		std::string line;
@@ -219,6 +220,10 @@ int read_table(std::string table_name)
 
 		while (std::getline(myfile, line))
 		{
+
+			std::replace( line.begin(), line.end(), ',', '|'); 
+			// replace all ',' to '|'
+
 			std::cout << line << std::endl;
 		}
 	      	myfile.close();
@@ -238,19 +243,20 @@ int read_table(std::string table_name)
 return 0;
 }
 
-
+//program entry
 int main()
 {
 	bool exit_switch = 1;
-
+	//main control loop
 	while(exit_switch)
 	{
 		//interactive shell sdtio
 		std::string line;
 		std::cout << "dave-sql> ";
 		getline (std::cin, line);
-
 		std::string result;
+
+
                 //regex detect command
 		if(std::regex_match (line, std::regex("(CREATE DATABASE)(.*)" )))
 		{
@@ -328,10 +334,8 @@ int main()
 			read_table(table_name);
 		}
 
-
+		//exit switch
 		if(line == "exit"){return 0;}
-		if(line == "rmdir"){rmdir("dir1");}
-
 		line.clear();
 	}
 }
